@@ -61,7 +61,7 @@ class Listener(dict):
             if len(self[name]) == 0:
                 del self[name]
 
-    def listen(self,event):
+    def listen(self, event, repeat=True):
         def wrap(f):
             self.addSub(event, f)
             return f
@@ -86,36 +86,7 @@ class Listener(dict):
         self.addSub('listeners', listener)
 
     def __sub__(self, listener):
-        self.removeSub('listener', listener)
+        self.removeSub('listeners', listener)
 
     def __repr__(self):
         return "Listener %s"% dict.__repr__(self)
-
-
-
-
-L = Listener()
-
-@L.listen('call')
-def answer(name):
-    print "{name}'s call was answered".format(name=name)
-
-
-@L.trigger('call')
-def call(name):
-    print name, "is calling"
-    return name
-
-L2 = Listener()
-
-
-@L2.listen('call')
-def bob(name):
-    print "bob was called by", name
-
-call('willem')
-
-L + L2
-print L, L2
-
-call('willem')
