@@ -14,7 +14,7 @@ def call(name):
 
 L2 = Listener()
 
-
+@L2.listen('we')
 @L2.listen('call')
 def bob(name):
     print "bob was called by", name
@@ -28,3 +28,4 @@ call('willem')
 L - L2
 print L
 call('willem')
+L2('we','we')

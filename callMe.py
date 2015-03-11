@@ -43,7 +43,7 @@ class Event(list):
     def __repr__(self):
         items = []
         for item in self:
-            if isinstance(item, types.FunctionType): #make functions prettier
+            if isinstance(item, types.FunctionType) or isinstance(item, types.MethodType): #make functions prettier
                 items.append(item.__name__)
             else:
                 items.append(item)
