@@ -2,7 +2,7 @@ from callMe import Listener
 
 L = Listener()
 
-@L.listen('call')
+@L.listen('call',repeat=False)
 def answer(name):
     print "{name}'s call was answered".format(name=name)
 
@@ -28,4 +28,3 @@ call('willem')
 L - L2
 print L
 call('willem')
-L2('we','we')

@@ -31,10 +31,15 @@ class Event(list):
     g(2)
 
     """
+    def __init__(self,repeat=True):
+        super(Event,self).__init__()
+        self.repeat = repeat
 
     def __call__(self, *args, **kwargs):
         for f in self:
             f(*args, **kwargs)
+        if not self.repeat:
+            map(lambda func: self.remove(func),self)
 
     def remove(self, func):
         if func in self:
@@ -50,10 +55,11 @@ class Event(list):
         return "Event %s" % list.__repr__(items)
 
 class Listener(dict):
-    def addSub(self, name, callback):
+    def addSub(self, name, callback,repeat=True):
         '''sets self[name] to Event() if there is no key name.
            Either way self[name] is returned and callback is appended'''
-        self.setdefault(name, Event()).append(callback)
+
+        self.setdefault(name, Event(repeat)).append(callback)
 
     def removeSub(self, name, callback):
         if name in self:
@@ -63,7 +69,7 @@ class Listener(dict):
 
     def listen(self, event, repeat=True):
         def wrap(f):
-            self.addSub(event, f)
+            self.addSub(event, f,repeat)
             return f
         return wrap
 
@@ -76,9 +82,13 @@ class Listener(dict):
             return newFunc
         return wrap
 
+
     def __call__(self, event, *args, **kwargs):
         if event in self:
             self[event](*args, **kwargs)
+            if len(self[event])==0:
+                self.removeSub(event,self[event])
+
         if "listeners" in self:
             self['listeners'](event, *args, **kwargs)
 
