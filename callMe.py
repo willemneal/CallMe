@@ -46,19 +46,16 @@ class Event(list):
             list.remove(self,func)
 
     def __repr__(self):
-        items = []
-        for item in self:
-            if isinstance(item, types.FunctionType) or isinstance(item, types.MethodType): #make functions prettier
-                items.append(item.__name__)
-            else:
-                items.append(item)
+        #Make function names look prettier
+        items = [item.__name__ if isinstance(item, types.FunctionType) or isinstance(item, types.MethodType)
+                else item
+                for item in self]
         return "Event %s" % list.__repr__(items)
 
 class Listener(dict):
     def addSub(self, name, callback,repeat=True):
         '''sets self[name] to Event() if there is no key name.
            Either way self[name] is returned and callback is appended'''
-
         self.setdefault(name, Event(repeat)).append(callback)
 
     def removeSub(self, name, callback):
@@ -100,3 +97,11 @@ class Listener(dict):
 
     def __repr__(self):
         return "Listener %s"% dict.__repr__(self)
+
+    def getListeners(self):
+        if "listeners" in self:
+            return self['listeners']
+        return None
+
+    def isListener(self, listener):
+        return listener in self.getListeners()
